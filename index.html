@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pegawai - Toko Bermi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_append.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-overlay">
+        <div class="login-card">
+            <img src="LOGO TOKO BERMI BULAT.png" alt="Logo" class="login-logo">
+            <h2>Login Pegawai</h2>
+            <p>Silakan masuk untuk mencatat Barang Keluar</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Username (Email)</label>
+                    <input type="email" id="login-email" placeholder="Masukkan email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-password" placeholder="Masukkan password" required>
+                        <button type="button" id="toggle-password" class="toggle-password-btn"
+                            onclick="togglePasswordVisibility()">
+                            <span id="eye-icon">👁</span>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="add-customer-button">Masuk ke Sistem</button>
+            </form>
+            <div id="login-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <div class="app-wrapper" id="main-app" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                <span id="toggle-icon">❮</span>
+            </button>
+            <div class="logo-container">
+                <img src="LOGO TOKO BERMI BULAT.png" alt="Logo Toko Bermi" class="sidebar-logo">
+                <h2 class="brand-name">Toko Bermi</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" onclick="showScreen('outgoing-goods')">
+                    <span class="icon">📤</span> <span class="nav-label">Barang Keluar</span>
+                </button>
+                <div style="flex-grow: 1;"></div>
+                <button id="logout-btn" class="nav-item nav-logout" onclick="logout()">
+                    <span class="icon">🚪</span> <span class="nav-label">Logout</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="welcome-text">Selamat Datang, <strong>Pegawai</strong></div>
+                <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+                    <div class="date-display" id="current-date-display"></div>
+                    <!-- Theme toggle -->
+                    <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode"><span
+                            id="theme-icon">🌙</span></button>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <div id="outgoing-goods" class="screen active fade-in" style="display: block;">
+                    <h2>Barang Keluar</h2>
+                    <div class="card add-item-card" style="margin-bottom: 30px;">
+                        <h3 style="margin-bottom: 20px;">📤 Input Barang Keluar</h3>
+                        <form id="outgoing-form" onsubmit="addOutgoingTransaction(event)">
+                            <div class="form-group">
+                                <label>Tanggal:</label>
+                                <input type="date" id="outgoing-date" required>
+                            </div>
+
+                            <h4 style="margin-top: 20px; margin-bottom: 10px;">Daftar Barang</h4>
+                            <div id="outgoing-items-list"></div>
+                            <button type="button" class="row-btn btn-add" onclick="addOutgoingRow()"
+                                style="margin-top: 10px;">+</button>
+
+                            <button type="submit" class="add-customer-button" style="margin-top: 25px;">Simpan Barang
+                                Keluar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <footer class="app-footer">
+                    <div class="footer-left">
+                        <img src="LOGO TOKO BERMI PANJANG.png" alt="Logo Toko Bermi" class="footer-logo">
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="modal-message"></p>
+            </div>
+            <button class="close-button" onclick="closeModal()">X</button>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content confirm-card">
+            <div class="modal-body">
+                <h3 id="confirm-title" style="margin-bottom: 15px; color: var(--text-primary);">Konfirmasi</h3>
+                <p id="confirm-message" style="margin-bottom: 25px; color: var(--text-secondary);"></p>
+                <div class="confirm-buttons">
+                    <button id="confirm-yes" class="btn-confirm btn-primary">Ya</button>
+                    <button id="confirm-no" class="btn-confirm btn-secondary"
+                        onclick="closeConfirmModal()">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="theme.js"></script>
+</body>
+
+</html>
