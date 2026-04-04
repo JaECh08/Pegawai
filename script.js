@@ -81,6 +81,7 @@ function startDataSync() {
     });
     db.ref('outgoing').on('value', (snapshot) => {
         dbData.outgoing = snapshot.val() || [];
+        renderOutgoingTable();
     });
 }
 
@@ -359,3 +360,96 @@ function initTransactionForms() {
         addOutgoingRow();
     }
 }
+
+// --- HISTORY RENDERING ---
+
+function renderOutgoingTable() {
+    const tbody = document.querySelector('#outgoing-table tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    const history = getData('outgoing') || [];
+    const searchInput = document.getElementById('outgoing-search-input');
+    const searchValue = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const sorted = [...history].sort((a, b) => b.id - a.id);
+
+    sorted.forEach(trans => {
+        const items = trans.items || [];
+
+        if (searchValue) {
+            const matchItem = items.some(i => i.name.toLowerCase().includes(searchValue));
+            if (!matchItem) return;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${trans.date}</td>
+            <td style="text-align: center;">
+                <button class="action-btn" onclick="showOutgoingDetail(${trans.id})" style="background:#3b82f6; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Rincian Pesanan</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+window.renderOutgoingTable = renderOutgoingTable;
+
+function showOutgoingDetail(id) {
+    const history = getData('outgoing');
+    const trans = history.find(t => t.id === id);
+    if (!trans) return;
+
+    const items = trans.items || [];
+
+    let grandTotal = 0;
+    items.forEach(i => grandTotal += (i.total || ((i.hpp || 0) * i.qty) || 0));
+
+    const content = `
+        <div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+            <p><strong>Tanggal:</strong> ${trans.date}</p>
+        </div>
+        <div class="table-responsive">
+            <table class="detail-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th style="text-align: left;">Jumlah</th>
+                        <th style="text-align: left;">Satuan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${items.map(item => `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td style="text-align:left;">${item.qty}</td>
+                            <td style="text-align:left;">${item.unit || '-'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        <p style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9em;">* Murni tampilan riwayat (Read-Only)</p>
+    `;
+
+    const detailBody = document.getElementById('detail-modal-body');
+    if (detailBody) {
+        detailBody.innerHTML = content;
+        const modal = document.getElementById('detail-modal');
+        modal.style.display = 'block';
+    }
+}
+window.showOutgoingDetail = showOutgoingDetail;
+
+function closeDetailModal() {
+    const modal = document.getElementById('detail-modal');
+    if (modal) modal.style.display = 'none';
+}
+window.closeDetailModal = closeDetailModal;
+
+function formatRupiah(amount) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(amount);
+}
+window.formatRupiah = formatRupiah;
