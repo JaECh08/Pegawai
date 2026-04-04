@@ -92,6 +92,28 @@
                                 Keluar</button>
                         </form>
                     </div>
+
+                    <div class="stock-controls" style="margin-top: 50px; margin-bottom: 15px;">
+                        <h3 style="margin-bottom: 0;">Riwayat Barang Keluar</h3>
+                        <div class="search-group">
+                            <input type="text" id="outgoing-search-input" placeholder="Cari barang di riwayat..."
+                                oninput="renderOutgoingTable()">
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: 0; overflow: hidden;">
+                        <table id="outgoing-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 150px;">Tanggal</th>
+                                    <th style="text-align: center;">Rincian Pesanan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data Riwayat akan muncul di sini -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- FOOTER -->
@@ -124,6 +146,19 @@
                     <button id="confirm-no" class="btn-confirm btn-secondary"
                         onclick="closeConfirmModal()">Batal</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal for History -->
+    <div id="detail-modal" class="modal">
+        <div class="modal-content detail-modal-content">
+            <div class="detail-modal-header">
+                <h2 id="detail-modal-title">Detail Informasi</h2>
+                <button class="detail-close-btn" onclick="closeDetailModal()">×</button>
+            </div>
+            <div class="detail-modal-body" id="detail-modal-body">
+                <!-- Content will be dynamically inserted here -->
             </div>
         </div>
     </div>
